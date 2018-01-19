@@ -65,7 +65,9 @@ public class LoginActivity extends AppCompatActivity {
         tv_find_psw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //跳转到找回密码界面（此页面暂未创建）
+                //跳转找回密码界面
+                Intent intent=new Intent(LoginActivity.this,FindPswActivity.class);
+                startActivity(intent);
             }
         });
 

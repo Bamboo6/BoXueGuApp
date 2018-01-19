@@ -11,6 +11,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.zip.Deflater;
+
 import cn.edu.lt.android.boxueguapp.R;
 
 /**
@@ -18,32 +20,34 @@ import cn.edu.lt.android.boxueguapp.R;
  */
 
 public class SettingActivity extends AppCompatActivity {
+    public static SettingActivity instance;
     private TextView tv_main_title;
     private TextView tv_back;
     private RelativeLayout rl_title_bar;
-    private RelativeLayout rl_modify_psw,rl_security_setting,rl_exit_login;
+    private RelativeLayout rl_modify_psw, rl_security_setting, rl_exit_login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+        instance = this;
         init();
     }
 
     /**
      * 获取界面控件
      */
-    private void init(){
+    private void init() {
         //标题栏
-        tv_main_title=(TextView) findViewById(R.id.tv_main_title);
+        tv_main_title = (TextView) findViewById(R.id.tv_main_title);
         tv_main_title.setText("设置");
-        tv_back=(TextView) findViewById(R.id.tv_back);
-        rl_title_bar=(RelativeLayout) findViewById(R.id.title_bar);
+        tv_back = (TextView) findViewById(R.id.tv_back);
+        rl_title_bar = (RelativeLayout) findViewById(R.id.title_bar);
         rl_title_bar.setBackgroundColor(Color.parseColor("#30B4FF"));
 
-        rl_modify_psw=(RelativeLayout) findViewById(R.id.rl_modify_psw);
-        rl_security_setting=(RelativeLayout) findViewById(R.id.rl_security_setting);
-        rl_exit_login=(RelativeLayout) findViewById(R.id.rl_exit_login);
+        rl_modify_psw = (RelativeLayout) findViewById(R.id.rl_modify_psw);
+        rl_security_setting = (RelativeLayout) findViewById(R.id.rl_security_setting);
+        rl_exit_login = (RelativeLayout) findViewById(R.id.rl_exit_login);
         //返回的点击事件
         tv_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,14 +59,17 @@ public class SettingActivity extends AppCompatActivity {
         rl_modify_psw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO 跳转到修改密码
+                Intent intent = new Intent(SettingActivity.this, ModifyPswActivity.class);
+                startActivity(intent);
             }
         });
         //设置密保的点击事件
         rl_security_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(SettingActivity.this, FindPswActivity.class);
+                intent.putExtra("from", "security");
+                startActivity(intent);
             }
         });
         //退出登录的点击事件
@@ -73,7 +80,7 @@ public class SettingActivity extends AppCompatActivity {
                 Toast.makeText(SettingActivity.this, "退出登录成功", Toast.LENGTH_SHORT).show();
                 clearLoginStatus();//清除登录状态和登录时的用户名
                 //退出登录成功后把退出成功的状态传递到MainActivity中
-                Intent data =new Intent();
+                Intent data = new Intent();
                 data.putExtra("isLogin", false);
                 setResult(RESULT_OK, data);
                 SettingActivity.this.finish();
@@ -85,8 +92,8 @@ public class SettingActivity extends AppCompatActivity {
      * 清除SharedPreferences中的登录状态和登录时的用户名
      */
     private void clearLoginStatus() {
-        SharedPreferences sp=getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=sp.edit();//获取编辑器
+        SharedPreferences sp = getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();//获取编辑器
         editor.putBoolean("isLogin", false);
         editor.putString("loginUserName", "");
         editor.commit();//提交修改
